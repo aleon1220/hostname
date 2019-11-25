@@ -4,6 +4,8 @@
 
 HOSTNAME=`hostname`
 VERSION=${VERSION:-v1}
+COMMIT_ID=${COMMIT_ID:-v1}
+
 cat > /usr/share/nginx/html/index.html <<EOF
 <HTML>
 <HEAD>
@@ -17,10 +19,12 @@ EOF
 
 mkdir /usr/share/nginx/html/healthz /usr/share/nginx/html/hostname /usr/share/nginx/html/version
 cat > /usr/share/nginx/html/hostname/index.html <<EOF
-$HOSTNAME -- $VERSION
+<h1> This Container displays runtime info </h1>
+<b>Hostname=</b> $HOSTNAME -- $VERSION
 EOF
 cat > /usr/share/nginx/html/version/index.html <<EOF
-$VERSION
+<b>Version=</b> $VERSION
+<b>Git Commit ID=</b> $COMMIT_ID
 EOF
 chmod 777 /usr/share/nginx/html/healthz
 cat > /usr/share/nginx/html/healthz/index.html <<EOF
