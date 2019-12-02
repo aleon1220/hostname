@@ -4,9 +4,9 @@
 
 HOSTNAME=$(hostname)
 #HOSTNAME=`hostname`
+ENV_CONTAINER=$(env)
 VERSION_CONTAINER=${VERSION:-v1}
 COMMIT_ID=${COMMIT_ID:defaultf2bfed773333bfd03e554f3aff73f571d572e93f}
-
 
 cat > /usr/share/nginx/html/index.html <<EOF
 <HTML>
@@ -14,12 +14,22 @@ cat > /usr/share/nginx/html/index.html <<EOF
 <TITLE>Page Hosted in Containerised= $HOSTNAME</TITLE>
 </HEAD>
 <BODY>
-<H1>THIS IS HOST [ $HOSTNAME  ]</H1>
+<H1>THIS IS HOST [ <var>HOSTNAME</var>]= $HOSTNAME </H1>
 <H2>And we're running version: $VERSION_CONTAINER</H2>
 <h1> This Container displays runtime info </h1>
 <b>Hostname=</b> $HOSTNAME        <br>
 <b>Tag Version=</b> $VERSION_CONTAINER      <br>
 <b>Git Commit ID=</b> $COMMIT_ID  <br>
+<hr>
+<H1>THIS IS $ <var>ENV</var> Value for HOST  $<var>HOSTNAME</var>= $HOSTNAME </H1>
+<p>
+The Following Section contains an output of the Containers ENV value ENV 
+</p>
+
+<p>
+<code>$ENV_CONTAINER</code>
+</p>
+
 </BODY>
 </HTML>
 EOF

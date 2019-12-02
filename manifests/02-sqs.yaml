@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Container Service SQS Queues
+
+Parameters:
+  ProductName:
+    Type: String
+    Description: The service name
+  Env:
+    Type: String
+    Description: The environment name. e.g. dev, prod
+
+Resources:
+  OrgSqs:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "OrgSqs-${ProductName}-${Env}.fifo"
+      FifoQueue: True
+      Tags:
+        - Key: Product
+          Value: !Ref ProductName
+        - Key: Env
+          Value: !Ref Env
+
+  OrgSqsDlq:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "OrgSqsDlq-${ProductName}-${Env}" 
+      Tags:
+        - Key: Product
+          Value: !Ref ProductName
+        - Key: Env
+          Value: !Ref Env
+
+  MoneySqs:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "MoneySqs-${ProductName}-${Env}.fifo"
+      FifoQueue: True
+      Tags:
+        - Key: Product
+          Value: !Ref ProductName
+        - Key: Env
+          Value: !Ref Env
+
+  MoneySqsDlq:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "MoneySqsDlq-${ProductName}-${Env}" 
+      Tags:
+        - Key: Product
+          Value: !Ref ProductName
+        - Key: Env
+          Value: !Ref Env
+
+Outputs:
+  OrgSqs:
+    Value: !Ref OrgSqs
+    Export:
+      Name: !Sub "OrgSqs-${ProductName}-${Env}"
+  MoneySqs:
+    Value: !Ref MoneySqs
+    Export:
+      Name: !Sub "MoneySqs-${ProductName}-${Env}" 
