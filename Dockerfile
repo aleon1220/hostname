@@ -1,5 +1,7 @@
 FROM nginx:latest
 ARG VERSION
+ARG COMMIT_ID
 ENV VERSION=$VERSION
+ENV COMMIT_ID=$COMMIT_ID
 COPY hostname.sh .
 CMD ["/hostname.sh"]

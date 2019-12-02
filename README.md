@@ -1,31 +1,49 @@
-Login to your registry (e.g. hub.docker.com by default)
+# Hostname Container Example Demo
 
+1. Login to your registry (e.g. hub.docker.com by default)
+
+```
 docker login
 username: xxxx
 password: xxxx
+```
 
-Build the image
+2. Prepare Env Variables and build docker image 
+```
+export USER_GIT_NAME=""
+export VERSION="vX"
+# Use another Branch if required. Command below gets the latest commit ID.
+export COMMIT_ID=$( git rev-parse origin/master )
+```
 
-docker build --build-arg VERSION=v1 . -t {username}/hostname:v1
+- Build docker image
 
-Push the image
+```
+docker build \
+     --build-arg VERSION=$VERSION \
+     --build-arg COMMIT_ID=${COMMIT_ID} \
+     --tag ${USER_GIT_NAME}/hostname:${VERSION} .
+```
 
-docker push -t {username}/hostname:v1
+3. Push the image
 
-Run the image:
+`docker push -t {USER_GIT_NAME}/hostname:$VERSION`
 
-docker run --rm --name hostname -p 8080:80 -d rstarmer/hostname:v1
+4. Run the image:
 
-Test that the image works:
+`docker run --rm --name hostname -p 8080:80 -d $USER_GIT_NAME/hostname:$VERSION`
 
-curl http://localhost:8080
+## Test that the image works:
 
-Stop the running instance:
+`curl http://localhost:8080`
 
-docker stop hostname
+## Stop the running instance:
 
-Clean up the local build/run environment:
+`docker stop hostname`
 
-docker rmi rstarmer/hostname:v1
+## Clean up the local build/run environment:
+
+```
+docker rmi $USER_GIT_NAME/hostname:v1
 docker rmi nginx:latest
-
+```
