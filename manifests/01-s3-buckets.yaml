@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Container Infrastructure - S3 resources
+
+Parameters:
+  ProductName:
+    Type: String
+    Description: The service name
+  Env:
+    Type: String
+    Description: The environment name. e.g. dev, prod
+  Version:
+    Type: String
+    Description: The software version.
+
+Resources:
+  DataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      ObjectLockEnabled: True
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      BucketName: !Sub 'deref-DataBucket-${AWS::AccountId}'
+      LoggingConfiguration:
+        DestinationBucketName: !Ref 'LoggingBucket'
+        LogFilePrefix: payloaddata
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+    DeletionPolicy: Retain
+
+  # S3 Bucket to hold access logs of data bucket
+  LoggingBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: LogDeliveryWrite
+      BucketName: !Sub 'deref-LoggingBucket-${AWS::AccountId}'
+    DeletionPolicy: Retain
