@@ -4,13 +4,13 @@ Description: Container Infrastructure - S3 resources
 Parameters:
   ProductName:
     Type: String
-    Description: The service name
+    Description: The service name app to be used
   Env:
     Type: String
     Description: The environment name. e.g. dev, prod
   Version:
     Type: String
-    Description: The software version.
+    Description: The software version. Usually comes from git repo tag.
 
 Resources:
   DataBucket:

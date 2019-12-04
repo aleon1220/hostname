@@ -7,7 +7,7 @@ Parameters:
     Description: The service name
   Env:
     Type: String
-    Description: The environment name. e.g. dev, prod
+    Description: The environment name. e.g. dev, systest, staging, prod. Could come from Spinnaker Parameters.
 
 Resources:
 
@@ -25,7 +25,7 @@ Resources:
   derefSQS:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: !Sub "derefqueue-${ProductName}-${Env}.fifo"
+      QueueName: !Sub "derefSQS-${ProductName}-${Env}.fifo"
       FifoQueue: True
       Tags:
         - Key: Product
@@ -38,3 +38,7 @@ Outputs:
     Value: !Ref MoneySqs
     Export:
       Name: !Sub "MoneySqs-${ProductName}-${Env}" 
+  derefSQS:
+    Value: !Ref derefSQS
+    Export:
+      Name: !Sub "derefSQS-${ProductName}-${Env}"      
