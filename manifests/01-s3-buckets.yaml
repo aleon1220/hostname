@@ -26,7 +26,7 @@ Resources:
       BucketName: !Sub "deref-databucket-${AWS::AccountId}"
       LoggingConfiguration:
         DestinationBucketName: !Ref 'LoggingBucket'
-        LogFilePrefix: payloaddata
+        LogFilePrefix: invoicelogdata
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:

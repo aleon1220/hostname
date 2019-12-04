@@ -20,7 +20,18 @@ Resources:
         - Key: Product
           Value: !Ref ProductName
         - Key: Env
-          Value: !Ref Env    
+          Value: !Ref Env
+          
+  derefSQS:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "derefqueue-${ProductName}-${Env}.fifo"
+      FifoQueue: True
+      Tags:
+        - Key: Product
+          Value: !Ref ProductName
+        - Key: Env
+          Value: !Ref Env                
 
 Outputs:
   MoneySqs:
