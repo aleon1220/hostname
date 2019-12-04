@@ -23,7 +23,7 @@ Resources:
         BlockPublicPolicy: True
         IgnorePublicAcls: True
         RestrictPublicBuckets: True
-      BucketName: !Sub 'deref-DataBucket-${AWS::AccountId}'
+      BucketName: !Sub 'deref-databucket-${AWS::AccountId}'
       LoggingConfiguration:
         DestinationBucketName: !Ref 'LoggingBucket'
         LogFilePrefix: payloaddata
@@ -38,5 +38,5 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: LogDeliveryWrite
-      BucketName: !Sub 'deref-LoggingBucket-${AWS::AccountId}'
+      BucketName: !Sub 'deref-loggingbucket-${AWS::AccountId}'
     DeletionPolicy: Retain
