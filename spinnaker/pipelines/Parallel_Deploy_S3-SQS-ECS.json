@@ -1,0 +1,215 @@
+{
+    "appConfig": {},
+    "expectedArtifacts": [],
+    "keepWaitingPipelines": false,
+    "lastModifiedBy": "admin",
+    "limitConcurrent": true,
+    "parameterConfig": [
+      {
+        "default": "v.0.1",
+        "description": "Enter a Tag Value to be deployed.",
+        "hasOptions": true,
+        "label": "Enter Git Tag required to be deployed value here.",
+        "name": "GitTag",
+        "options": [
+          {
+            "value": "v.0.1"
+          },
+          {
+            "value": "v1"
+          },
+          {
+            "value": "master"
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "",
+        "hasOptions": true,
+        "label": "Enter name of the environment that will be deployed.",
+        "name": "Environment",
+        "options": [
+          {
+            "value": "develop"
+          },
+          {
+            "value": "sandbox"
+          },
+          {
+            "value": "test"
+          },
+          {
+            "value": "systest"
+          },
+          {
+            "value": "staging"
+          }
+        ],
+        "pinned": false,
+        "required": false
+      },
+      {
+        "default": "deref",
+        "description": "",
+        "hasOptions": false,
+        "label": "Enter the name of the product",
+        "name": "ProductName",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": false
+      }
+    ],
+    "stages": [
+      {
+        "failPipeline": true,
+        "judgmentInputs": [],
+        "name": "Prepare",
+        "notifications": [],
+        "refId": "3",
+        "requisiteStageRefIds": [],
+        "type": "manualJudgment"
+      },
+      {
+        "changeSetName": "v1",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": false,
+        "credentials": "aws-account-iam-credentials",
+        "expectedArtifacts": [],
+        "failPipeline": true,
+        "isChangeSet": false,
+        "name": "Deploy CF 01 AWS S3 artifact From Github",
+        "parameters": {
+          "Env": "test",
+          "ProductName": "deref-deliver",
+          "Version": "master"
+        },
+        "refId": "4",
+        "regions": [
+          "ap-southeast-2"
+        ],
+        "requisiteStageRefIds": [
+          "3"
+        ],
+        "source": "artifact",
+        "stackArtifact": {
+          "artifactAccount": "aleon1220",
+          "id": "47882d11-f516-4e08-839e-06170cb8f6b8",
+          "name": "manifests/01-s3-buckets.yaml",
+          "reference": "https://api.github.com/repos/aleon1220/hostname/contents/manifests/01-s3-buckets.yaml",
+          "type": "github/file",
+          "version": "${trigger['parameters']['GitTag']}"
+        },
+        "stackName": "deref-01-cf-bucket",
+        "tags": {
+          "purpose": "spinnaker"
+        },
+        "templateBody": [
+          {
+            "AWSTemplateFormatVersion": "2010-09-09",
+            "Description": "Container Service SQS Queues"
+          }
+        ],
+        "type": "deployCloudFormation"
+      },
+      {
+        "name": "Wait for AWS to stabilize",
+        "refId": "6",
+        "requisiteStageRefIds": [
+          "4",
+          "7"
+        ],
+        "type": "wait",
+        "waitTime": 30
+      },
+      {
+        "changeSetName": "v1",
+        "credentials": "aws-account-iam-credentials",
+        "expectedArtifacts": [],
+        "isChangeSet": false,
+        "name": "Deploy CF 02 AWS SQS artifact From Github",
+        "parameters": {
+          "Env": "test",
+          "ProductName": "Deref"
+        },
+        "refId": "7",
+        "regions": [
+          "ap-southeast-2"
+        ],
+        "requisiteStageRefIds": [
+          "3"
+        ],
+        "source": "artifact",
+        "stackArtifact": {
+          "artifactAccount": "aleon1220",
+          "id": "47882d11-f516-4e08-839e-06170cb8f6b8",
+          "name": "manifests/02-sqs.yaml",
+          "reference": "https://api.github.com/repos/aleon1220/hostname/contents/manifests/02-sqs.yaml",
+          "type": "github/file",
+          "version": "${trigger['parameters']['GitTag']}"
+        },
+        "stackName": "deref-02-cf-queue",
+        "tags": {
+          "purpose": "spinnaker"
+        },
+        "templateBody": [
+          {
+            "AWSTemplateFormatVersion": "2010-09-09",
+            "Description": "Container Service SQS Queues"
+          }
+        ],
+        "type": "deployCloudFormation"
+      },
+      {
+        "changeSetName": "v1",
+        "completeOtherBranchesThenFail": true,
+        "continuePipeline": false,
+        "credentials": "aws-account-iam-credentials",
+        "expectedArtifacts": [],
+        "failPipeline": false,
+        "isChangeSet": false,
+        "name": "Deploy CF 03 AWS ECS artifact From Github",
+        "parameters": {
+          "DockerImgVersion": "085980086235.dkr.ecr.ap-southeast-2.amazonaws.com/aleon1220/hostname:v3",
+          "Env": "test",
+          "ProductName": "deref",
+          "ServiceName": "spinnaker-ecs"
+        },
+        "refId": "8",
+        "regions": [
+          "ap-southeast-2"
+        ],
+        "requisiteStageRefIds": [
+          "6"
+        ],
+        "source": "artifact",
+        "stackArtifact": {
+          "artifactAccount": "aleon1220",
+          "id": "47882d11-f516-4e08-839e-06170cb8f6b8",
+          "name": "manifests/03-aws-ecs-service-task-param-secret.yaml",
+          "reference": "https://api.github.com/repos/aleon1220/hostname/contents/manifests/03-aws-ecs-service-task-param-secret.yaml",
+          "type": "github/file",
+          "version": "${trigger['parameters']['GitTag']}"
+        },
+        "stackName": "deref-03-cf-ecs",
+        "tags": {
+          "purpose": "spinnaker"
+        },
+        "templateBody": [
+          {
+            "AWSTemplateFormatVersion": "2010-09-09",
+            "Description": "Container Service SQS Queues"
+          }
+        ],
+        "type": "deployCloudFormation"
+      }
+    ],
+    "triggers": [],
+    "updateTs": "1575499067000"
+  }
