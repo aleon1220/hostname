@@ -10,8 +10,7 @@ password: xxxx
 
 2. Prepare Env Variables and build docker image 
 ```
-export USER_GIT_NAME=""
-export VERSION="vX"
+export USER_GIT_NAME="aleon1220"; export VERSION="v5"; export APP_ENV="environment_name"
 # Use another Branch if required. Command below gets the latest commit ID.
 export COMMIT_ID=$( git rev-parse origin/master )
 ```
@@ -20,8 +19,9 @@ export COMMIT_ID=$( git rev-parse origin/master )
 
 ```
 docker build \
-     --build-arg VERSION=$VERSION \
+     --build-arg VERSION=$VERSION       \
      --build-arg COMMIT_ID=${COMMIT_ID} \
+     --build-arg APP_ENV=${APP_ENV}     \
      --tag ${USER_GIT_NAME}/hostname:${VERSION} .
 ```
 
